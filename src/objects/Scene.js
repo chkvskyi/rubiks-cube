@@ -1,4 +1,4 @@
-import { Group, Geometry, LineBasicMaterial, Line, Vector3, Float32BufferAttribute, Object3D } from 'three';
+import { Group, Geometry, LineBasicMaterial, Line, Vector3, Float32BufferAttribute, Object3D, AxesHelper } from 'three';
 import Cube from './Cube/Cube';
 import BasicLights from './Lights';
 
@@ -8,11 +8,12 @@ export default class SeedScene extends Group {
 
     const lights = new BasicLights();
     const cube = new Cube();
+    const axes = new AxesHelper(5)
 
-    this.add(cube, lights);
+    this.add(cube, lights, axes);
   }
 
   update(timeStamp) {
-    this.rotation.set(timeStamp / 1000, timeStamp / 1000, timeStamp / 1000);
+    // this.rotation.set(timeStamp / 1000, timeStamp / 1000, timeStamp / 1000);
   }
 }

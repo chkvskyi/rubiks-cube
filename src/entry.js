@@ -12,7 +12,7 @@ const seedScene = new SeedScene();
 scene.add(seedScene);
 
 // camera
-camera.position.set(6,3,-10);
+camera.position.set(5,5,5);
 camera.lookAt(new Vector3(0,0,0));
 
 // renderer
@@ -36,7 +36,7 @@ const onAnimationFrameHandler = (timeStamp) => {
 window.requestAnimationFrame(onAnimationFrameHandler);
 
 // resize
-const windowResizeHanlder = () => { 
+const windowResizeHanlder = () => {
     const { innerHeight, innerWidth } = window;
     renderer.setSize(innerWidth, innerHeight);
     camera.aspect = innerWidth / innerHeight;
