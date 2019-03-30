@@ -2,21 +2,33 @@ import { Group, CubeGeometry, MeshLambertMaterial, Mesh, MeshBasicMaterial, BoxG
 
 /**
  * subPart
- * 0: F(Front): White - W
- * 1: D(Back): Yellow - Y
- * 2: T(Top): Red - R
- * 3: B(Bottom): Orange - O
- * 4: L(Left): Blue/Purple -
+ * 0: F(Front): White
+ * 1: D(Back): Yellow
+ * 2: T(Top): Red
+ * 3: B(Bottom): Orange
+ * 4: L(Left): Blue/Purple
  * 5: R(Right): Green
  */
 
+ /**
+  * TODO:
+  * CubeModel for replresentation of state
+  * Cube3D for rendering
+  * animated rotation
+  * ??? basic solving algo
+  * genetic algo
+  * Singmaster notation
+  */
+
+
+  // 1260 RTTDDDBDDD
 const sideMaping = new Map();
-sideMaping.set('F', { x: 2, subRotation: [0,1,4,5,3,2] });
-sideMaping.set('D', { x: 0, subRotation: [0,1,4,5,3,2] });
-sideMaping.set('T', { y: 2, subRotation: [4,5,2,3,1,0] });
-sideMaping.set('B', { y: 0, subRotation: [4,5,2,3,1,0] });
-sideMaping.set('L', { z: 2, subRotation: [2,3,1,0,4,5] });
-sideMaping.set('R', { z: 0, subRotation: [2,3,1,0,4,5] })
+sideMaping.set('F', { x: 2, subRotation: [0,1,4,5,3,2], color: 'white' });
+sideMaping.set('D', { x: 0, subRotation: [0,1,4,5,3,2], color: 'yellow' });
+sideMaping.set('T', { y: 2, subRotation: [4,5,2,3,1,0], color: 'red' });
+sideMaping.set('B', { y: 0, subRotation: [4,5,2,3,1,0], color: 'orange' });
+sideMaping.set('L', { z: 2, subRotation: [2,3,1,0,4,5], color: 'purple' });
+sideMaping.set('R', { z: 0, subRotation: [2,3,1,0,4,5], color: 'green' });
 
 export default class Cube extends Group {
   constructor() {
@@ -174,4 +186,15 @@ export default class Cube extends Group {
     this.cube = this.renderState(this.state);
     this.add(this.cube);
   }
+
+  suffle() {
+    const str = 'FDTBLR'.split('');
+
+    for (let i=0; i < 100; i++) {
+      const dir = str[Math.floor(Math.random() * 6)];
+      this.rotate(dir);
+    }
+  }
+
+
 }

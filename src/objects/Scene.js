@@ -7,10 +7,10 @@ export default class SeedScene extends Group {
     super();
 
     const lights = new BasicLights();
-    const cube = new Cube();
+    this.cube = new Cube();
     const axes = new AxesHelper(5)
 
-    this.add(cube, lights, axes);
+    this.add(this.cube, lights, axes);
   }
 
   update(timeStamp) {
