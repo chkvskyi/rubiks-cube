@@ -10,24 +10,23 @@ import { Group, CubeGeometry, MeshLambertMaterial, Mesh, MeshBasicMaterial, BoxG
  * 5: R(Right): Green
  */
 
+const sideMaping = new Map();
+sideMaping.set('F', { x: 2, subRotation: [0,1,4,5,3,2] });
+sideMaping.set('D', { x: 0, subRotation: [0,1,4,5,3,2] });
+sideMaping.set('T', { y: 2, subRotation: [4,5,2,3,1,0] });
+sideMaping.set('B', { y: 0, subRotation: [4,5,2,3,1,0] });
+sideMaping.set('L', { z: 2, subRotation: [2,3,1,0,4,5] });
+sideMaping.set('R', { z: 0, subRotation: [2,3,1,0,4,5] })
+
 export default class Cube extends Group {
   constructor() {
     super();
     this.name = 'cube';
     this.state = this.initialState();
+    this.cube = this.renderState(this.state);
 
-    const cube = this.renderState(this.state);
-
-    // const materials = [
-    //   new MeshBasicMaterial({color: 0xf6f9f9}), //white
-    //   new MeshBasicMaterial({color: 0xbf392b}), //red
-    //   new MeshBasicMaterial({color: 0x26ae60}), //green
-    //   new MeshBasicMaterial({color: 0x8d44ad}), // purple
-    //   new MeshBasicMaterial({color: 0xf39c13}), // orange
-    //   new MeshBasicMaterial({color: 0xf1c40f}), // yellow
-    // ]
-
-    this.add(cube);
+    console.log(this.cube, this);
+    this.add(this.cube);
   }
 
   initialState() {
@@ -94,20 +93,85 @@ export default class Cube extends Group {
   }
 
   renderState(state) {
-    const cubeGeo = new BoxGeometry(1,1,1);
     const cube = new Object3D();
 
     for (let x = 0; x <= 2; x++) {
       for (let y = 0; y <= 2; y++) {
         for (let z = 0; z <= 2; z++) {
+          const cubeGeo = new BoxGeometry(1, 1, 1);
+          cubeGeo.translate(x * 1.01 - 1, y * 1.01 - 1, z * 1.01 - 1);
           const materials = state[x][y][z].map(side => new MeshBasicMaterial({ color: side.hexColor }));
           const subCube = new Mesh(cubeGeo, materials);
           cube.add(subCube);
-          subCube.position.set(x*1.01 - 1, y*1.01 - 1, z*1.01 - 1);
         }
       }
     }
 
     return cube;
+  }
+
+  rotate(key, state) {
+    if (!state) state = this.state;
+    const side = [];
+
+    if (sideMaping.get(key).x === 0 || sideMaping.get(key).x) {
+      const x = sideMaping.get(key).x;
+      for (let y = 0; y < 2; y++) {
+        for (let z = y; z < 2; z++) {
+          const temp = state[x][y][z];
+          state[x][y][z] = state[x][2-z][y];
+          state[x][2-z][y] = state[x][2-y][2-z];
+          state[x][2-y][2-z] = state[x][z][2-y];
+          state[x][z][2-y] = temp;
+        }
+      }
+    } else if (sideMaping.get(key).y === 0 || sideMaping.get(key).y) {
+      const y = sideMaping.get(key).y;
+      for (let x = 0; x < 2; x++) {
+        for (let z = x; z < 2; z++) {
+          const temp = state[x][y][z];
+          state[x][y][z] = state[2-z][y][x];
+          state[2-z][y][x] = state[2-x][y][2-z];
+          state[2-x][y][2-z] = state[z][y][2-x];
+          state[z][y][2-x] = temp;
+        }
+      }
+    } else if (sideMaping.get(key).z === 0 || sideMaping.get(key).z) {
+      const z = sideMaping.get(key).z;
+      for (let x = 0; x < 2; x++) {
+        for (let y = x; y < 2; y++) {
+          const temp = state[x][y][z];
+          state[x][y][z] = state[2-y][x][z];
+          state[2-y][x][z] = state[2-x][2-y][z];
+          state[2-x][2-y][z] = state[y][2-x][z];
+          state[y][2-x][z] = temp;
+        }
+      }
+    }
+
+    for (let x = 0; x <= 2; x++) {
+      for (let y = 0; y <= 2; y++) {
+        for (let z = 0; z <= 2; z++) {
+          if (sideMaping.get(key).x === x || sideMaping.get(key).y === y || sideMaping.get(key).z === z) side.push([x,y,z]);
+        }
+      }
+    }
+
+    side.forEach(s => {
+      const mapping = sideMaping.get(key).subRotation;
+      const temp = Object.assign({}, state[s[0]][s[1]][s[2]]);
+      for (let i = 0; i < 6; i++) {
+        state[s[0]][s[1]][s[2]][i] = temp[mapping[i]];
+      }
+    })
+
+    this.state = state;
+    this.redraw();
+  }
+
+  redraw() {
+    this.remove(this.cube);
+    this.cube = this.renderState(this.state);
+    this.add(this.cube);
   }
 }
