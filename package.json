@@ -11,10 +11,8 @@
   "author": "demi",
   "license": "MIT",
   "dependencies": {
-    "dat.gui": "^0.7.5",
-    "stats-js": "^1.0.0",
-    "three": "^0.102.1",
-    "three-orbitcontrols": "^2.102.1"
+    "three": "^0.109.0",
+    "three-orbitcontrols": "^2.108.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",

@@ -195,6 +195,4 @@ export default class Cube extends Group {
       this.rotate(dir);
     }
   }
-
-
 }

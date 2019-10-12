@@ -1,6 +1,5 @@
 import { WebGLRenderer, PerspectiveCamera, Scene, Vector3 } from 'three';
 import * as OrbitControls from 'three-orbitcontrols';
-import * as Stats from 'stats-js';
 import SeedScene from './objects/Scene.js';
 
 const scene = new Scene();
@@ -22,13 +21,8 @@ renderer.setClearColor(0x7ec0ee, 1);
 // helpers
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const stats = new Stats();
-stats.showPanel(0);
-document.body.appendChild( stats.dom );
-
 // render loop
 const onAnimationFrameHandler = (timeStamp) => {
-	stats.update();
     renderer.render(scene, camera);
     seedScene.update && seedScene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
